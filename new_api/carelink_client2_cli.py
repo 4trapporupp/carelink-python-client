@@ -25,9 +25,11 @@ import argparse
 import time
 import json
 import datetime
+import sync_to_firestore
 
 VERSION = "1.0"
 
+sync_to_firestore.init_firestore()
 
 def writeJson(jsonobj, name):
    filename = name + "-" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + ".json"
@@ -75,9 +77,10 @@ if client.init():
          recentData = client.getRecentData()
          if recentData != None and client.getLastResponseCode() == 200:
             if(data):
-               if writeJson(recentData, "data"):
-                  if verbose:
-                     print("Data saved successfully")
+               sync_to_firestore.uploadJsonToFirestore(recentData)
+               #if writeJson(recentData, "data"):
+               #   if verbose:
+               #      print("Data saved successfully")
          # Error occured
          else:
             print("ERROR: failed to get data (response code %d)" % client.getLastResponseCode())
