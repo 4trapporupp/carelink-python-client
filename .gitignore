@@ -131,3 +131,5 @@ dmypy.json
 # google cloud firestore
 **/serviceaccount.json
 
+# logindata
+**/logindata.json
