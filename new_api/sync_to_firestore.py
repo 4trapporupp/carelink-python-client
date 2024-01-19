@@ -21,6 +21,7 @@ def uploadJsonToFirestore(json_data):
 
     db = firestore.client()
     batch = db.batch()
+    number_of_items = 0
 
     new_latest_upload_time = latest_upload_time
 
@@ -41,6 +42,7 @@ def uploadJsonToFirestore(json_data):
             firestore_timestamp = to_firestore_timestamp(item['datetime'])
             doc["dateTime"] = firestore_timestamp
             batch.set(doc_ref, doc)
+            number_of_items += 1
         else:
             print("Skipped: " + item['datetime'] + " due to: " + item['sensorState'])
 
@@ -86,9 +88,10 @@ def uploadJsonToFirestore(json_data):
         if doc_ref:
             doc["dateTime"] = firestore_timestamp
             batch.set(doc_ref, doc)
+            number_of_items += 1
 
     # Number of items in the batch
-    print("Number of items in the batch: ", len(batch._writes))
+    print("Number of items in the batch: ", number_of_items)
     # Commit the batch
     batch.commit()
 
