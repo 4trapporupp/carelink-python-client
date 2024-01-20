@@ -36,6 +36,12 @@ def uploadJsonToFirestore(json_data):
         if item_time > new_latest_upload_time:
             new_latest_upload_time = item_time
 
+        if number_of_items >= 500:
+            batch.commit()
+            print("Uploading full batch to Firestore")
+            batch = db.batch()
+            number_of_items = 0
+
         if item['sensorState'] == 'NO_ERROR_MESSAGE':
             doc_ref = db.collection('sugarglucose').document(item['datetime'])
             doc = {'sg': item['sg'], 'kind': item['kind']}
@@ -60,6 +66,12 @@ def uploadJsonToFirestore(json_data):
         doc_id = marker['dateTime']
         doc_ref = None
         firestore_timestamp = to_firestore_timestamp(marker['dateTime'])
+
+        if number_of_items >= 500:
+            batch.commit()
+            print("Uploading full batch to Firestore")
+            batch = db.batch()
+            number_of_items = 0
 
         if marker['type'] == 'MEAL':
             doc_ref = db.collection('carbohydrates').document(doc_id)
@@ -93,7 +105,8 @@ def uploadJsonToFirestore(json_data):
     # Number of items in the batch
     print("Number of items in the batch: ", number_of_items)
     # Commit the batch
-    batch.commit()
+    if number_of_items > 0:
+        batch.commit()
 
     # Update the latest upload timestamp in memory
     latest_upload_time = new_latest_upload_time
