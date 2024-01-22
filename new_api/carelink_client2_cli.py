@@ -78,7 +78,7 @@ if client.init():
          recentData = client.getRecentData()
          # Success
          print("Recent data received")
-         print(recentData.length)  
+         print(json.dumps(recentData,indent=3)) 
          if recentData != None and client.getLastResponseCode() == 200:
             if(data):
                sync_to_firestore.uploadJsonToFirestore(recentData)
