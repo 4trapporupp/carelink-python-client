@@ -74,7 +74,11 @@ if client.init():
       if verbose:
          print("Starting download, count: %d" % (i+1))
       try:
+         print("Getting recent data")
          recentData = client.getRecentData()
+         # Success
+         print("Recent data received")
+         print(recentData.length)  
          if recentData != None and client.getLastResponseCode() == 200:
             if(data):
                sync_to_firestore.uploadJsonToFirestore(recentData)
@@ -86,7 +90,7 @@ if client.init():
             print("ERROR: failed to get data (response code %d)" % client.getLastResponseCode())
             break
       except Exception as e:
-         print(e)
+         print("error: " + str(e))
          break
             
       if i < repeat - 1:
